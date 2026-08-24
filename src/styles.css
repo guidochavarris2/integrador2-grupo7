@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #15233b;
+  --color-navy-mid: #1c2e4a;
+  --color-navy-deep: #0e1828;
+  --color-navy-fg: #e8eef8;
+  --color-navy-muted: #93a4c2;
+  --color-brand: #e85d04;
+  --color-brand-hover: #cf4f00;
+  --color-brand-pressed: #b84400;
+  --color-brand-soft: #fff1e8;
+  --color-brand-ring: #fdba74;
+  --color-teal: #0f766e;
+  --color-teal-soft: #ccfbf1;
+  --color-ink: #172033;
+  --color-ink-soft: #3d4a63;
+  --color-muted: #64748b;
+  --color-line: #e2e8f0;
+  --color-canvas: #f3f5f8;
+  --color-surface: #ffffff;
+  --color-success: #047857;
+  --color-success-soft: #d1fae5;
+  --color-warning: #b45309;
+  --color-warning-soft: #ffedd5;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fee2e2;
+  --color-info: #1d4ed8;
+  --color-info-soft: #dbeafe;
+
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+
+  --shadow-card:
+    0 0 0 1px rgb(15 23 42 / 0.04),
+    0 1px 2px rgb(15 23 42 / 0.04),
+    0 8px 24px -12px rgb(15 23 42 / 0.12);
+  --shadow-soft:
+    0 0 0 1px rgb(15 23 42 / 0.05),
+    0 10px 30px -18px rgb(15 23 42 / 0.25);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes rmx-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.rmx-shake {
+  animation: rmx-shake 0.4s var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
