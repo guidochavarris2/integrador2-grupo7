@@ -74,10 +74,10 @@
                 <label class="form-field__label" for="alquiler">Alquiler</label>
                 <select class="form-field__select" id="alquiler" data-devolucion-alquiler required>
                   <option value="">Selecciona un código…</option>
-                  <option value="ALQ-104" data-fecha-pactada="2026-08-19">ALQ-104 · Andamio Modular 2m · Juan Pérez</option>
-                  <option value="ALQ-107" data-fecha-pactada="2026-08-22">ALQ-107 · Cortadora de Concreto · Ana García</option>
-                  <option value="ALQ-110" data-fecha-pactada="2026-09-02">ALQ-110 · Generador 5kW · Constructora Lima Sur</option>
-                  <option value="ALQ-112" data-fecha-pactada="2026-09-05">ALQ-112 · Plataforma Elevadora Tijera · Inversiones Delta</option>
+                  <option value="ALQ-104" data-fecha-pactada="2026-08-19" data-equipo="EQ-001">ALQ-104 · Andamio Modular 2m · Juan Pérez</option>
+                  <option value="ALQ-107" data-fecha-pactada="2026-08-22" data-equipo="EQ-002">ALQ-107 · Cortadora de Concreto · Ana García</option>
+                  <option value="ALQ-110" data-fecha-pactada="2026-09-02" data-equipo="EQ-003">ALQ-110 · Generador 5kW · Constructora Lima Sur</option>
+                  <option value="ALQ-112" data-fecha-pactada="2026-09-05" data-equipo="EQ-010">ALQ-112 · Plataforma Elevadora Tijera · Inversiones Delta</option>
                 </select>
               </div>
               <div class="form-field">
@@ -101,9 +101,27 @@
               </div>
             </div>
 
-            <div class="form-field" style="margin-top:var(--space-4)">
-              <label class="form-field__label" for="obs-devolucion">Observaciones del equipo devuelto</label>
-              <input class="form-field__input" type="text" id="obs-devolucion" placeholder="Ej. Sin daños visibles" />
+            <div class="form-grid form-grid--2" style="margin-top:var(--space-4)">
+              <div class="form-field">
+                <label class="form-field__label" for="estado-equipo">Estado del equipo devuelto</label>
+                <select class="form-field__select" id="estado-equipo" data-devolucion-estado-equipo required>
+                  <option value="">Selecciona un estado…</option>
+                  <option value="disponible">Buen estado — sin observaciones</option>
+                  <option value="mantenimiento">Con daños — requiere mantenimiento</option>
+                  <option value="baja">Pérdida total — dar de baja</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="obs-devolucion">Observaciones (opcional)</label>
+                <input class="form-field__input" type="text" id="obs-devolucion" placeholder="Ej. Rayón leve en la base" />
+              </div>
+            </div>
+
+            <!-- Vista previa del cambio de estado en Inventario (RF-04, criterio "vuelve a Disponible") -->
+            <div class="banner" style="margin-top:var(--space-4)" data-devolucion-estado-preview-box>
+              <p class="banner__text" data-devolucion-estado-preview>
+                Selecciona el estado del equipo para ver a qué estado pasará en Inventario.
+              </p>
             </div>
 
             <div style="margin-top:var(--space-5); display:flex; gap:var(--space-3); flex-wrap:wrap">
@@ -158,3 +176,4 @@
   <script src="js/app.js"></script>
 </body>
 </html>
+
