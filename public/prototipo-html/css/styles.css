@@ -73,6 +73,7 @@ body {
   color: var(--color-ink);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden; /* la página nunca debe scrollear horizontalmente: solo .table-scroll lo hace internamente */
 }
 
 h1, h2, h3, p, ul, ol, figure {
@@ -117,8 +118,8 @@ table {
 }
 
 /* ---------- 3. Utilidades ---------- */
-.u-hide-desktop { display: block; }
-.u-hide-mobile { display: none; }
+.u-hide-desktop { display: block !important; }
+.u-hide-mobile { display: none !important; }
 
 .visually-hidden {
   position: absolute;
@@ -130,8 +131,8 @@ table {
 }
 
 @media (min-width: 1024px) {
-  .u-hide-desktop { display: none; }
-  .u-hide-mobile { display: flex; }
+  .u-hide-desktop { display: none !important; }
+  .u-hide-mobile { display: flex !important; }
 }
 
 /* ---------- 4. Botones ---------- */
@@ -651,6 +652,7 @@ table {
   border-radius: var(--radius-md);
   padding: var(--space-4);
   box-shadow: var(--shadow-sm);
+  min-width: 0; /* permite que el grid item se encoja; .table-scroll maneja su propio overflow-x */
 }
 
 .panel__header {
