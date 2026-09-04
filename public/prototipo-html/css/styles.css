@@ -718,6 +718,7 @@ table {
 .status-pill--available { background: var(--color-success-soft); color: var(--color-success); }
 .status-pill--rented { background: var(--color-primary-soft); color: var(--color-primary-dark); }
 .status-pill--maintenance { background: var(--color-warning-soft); color: var(--color-warning); }
+.status-pill--danger { background: var(--color-danger-soft); color: var(--color-danger); }
 
 /* ---------- Alertas ---------- */
 .alert-list {
