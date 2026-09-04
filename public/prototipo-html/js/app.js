@@ -112,6 +112,34 @@ document.addEventListener("DOMContentLoaded", () => {
   alquilerSelect?.addEventListener("change", calcularMora);
   fechaRealInput?.addEventListener("change", calcularMora);
 
+  /* ---------- Devoluciones: preview del estado al que pasa el equipo (RF-04) ---------- */
+  const estadoEquipoSelect = document.querySelector("[data-devolucion-estado-equipo]");
+  const estadoPreview = document.querySelector("[data-devolucion-estado-preview]");
+
+  const ESTADO_INFO = {
+    disponible: { label: "Disponible", pill: "status-pill--available" },
+    mantenimiento: { label: "Mantenimiento", pill: "status-pill--maintenance" },
+    baja: { label: "Baja de inventario", pill: "status-pill--danger" },
+  };
+
+  const actualizarPreviewEstado = () => {
+    if (!estadoPreview) return;
+    const equipoCodigo = alquilerSelect?.selectedOptions[0]?.dataset.equipo;
+    const estadoInfo = ESTADO_INFO[estadoEquipoSelect?.value];
+
+    if (!equipoCodigo || !estadoInfo) {
+      estadoPreview.textContent = "Selecciona un alquiler y un estado para ver a qué estado pasará el equipo en Inventario.";
+      return;
+    }
+
+    estadoPreview.innerHTML =
+      `El equipo <code>${equipoCodigo}</code> pasará a estado: ` +
+      `<span class="status-pill ${estadoInfo.pill}">${estadoInfo.label}</span> en Inventario.`;
+  };
+
+  estadoEquipoSelect?.addEventListener("change", actualizarPreviewEstado);
+  alquilerSelect?.addEventListener("change", actualizarPreviewEstado);
+
   /* ---------- Ayuda: acordeón FAQ accesible ---------- */
   document.querySelectorAll(".faq__question").forEach((button) => {
     button.addEventListener("click", () => {
