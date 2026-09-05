@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RentaMax — Ayuda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- P06 Ayuda — soporte al Operador de piso (referenciado en el banner del Dashboard) -->
+  <div class="app-shell">
+
+    <header class="app-shell__header u-hide-desktop">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+      <div class="app-shell__header-actions">
+        <a class="app-shell__logout" href="index.html">⏻ Salir</a>
+      </div>
+    </header>
+
+    <nav class="app-shell__nav" aria-label="Navegación principal">
+      <div class="nav__brand u-hide-mobile">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+
+      <div class="app-shell__nav-scroll">
+        <p class="nav__group-title">Operación</p>
+        <ul>
+          <li><a class="nav__link" href="dashboard.html">📊 Dashboard</a></li>
+          <li><a class="nav__link" href="inventario.html">📦 Inventario</a></li>
+          <li><a class="nav__link" href="alquileres.html">🧾 Alquileres</a></li>
+          <li><a class="nav__link" href="devoluciones.html">↩️ Devoluciones</a></li>
+        </ul>
+
+        <p class="nav__group-title">Sistema</p>
+        <ul>
+          <li><a class="nav__link nav__link--active" href="ayuda.html">❓ Ayuda</a></li>
+          <li class="u-hide-desktop"><a class="nav__link" href="index.html">⏻ Salir</a></li>
+        </ul>
+      </div>
+
+      <div class="nav__user">
+        <span class="nav__user-avatar" aria-hidden="true">CM</span>
+        <span>
+          <span class="nav__user-name">Carlos Mendoza</span><br />
+          <span class="nav__user-role">Operador de piso</span>
+        </span>
+      </div>
+    </nav>
+
+    <div class="app-shell__main-wrap">
+      <main class="app-shell__main">
+        <div class="page-heading">
+          <div>
+            <h1 class="page-heading__title">Centro de ayuda</h1>
+            <p class="page-heading__desc">Preguntas frecuentes del Operador de piso</p>
+          </div>
+        </div>
+
+        <section class="faq" aria-label="Preguntas frecuentes">
+          <div class="faq__item" data-open="true">
+            <button class="faq__question" type="button" aria-expanded="true">
+              ¿Por qué no puedo dar de alta un equipo nuevo?
+              <span class="faq__caret" aria-hidden="true">▾</span>
+            </button>
+            <p class="faq__answer">
+              Tu rol (Operador de piso) tiene permisos restringidos por diseño (RF-09). Solo Gerencia o
+              Administración pueden crear equipos nuevos en el inventario. Si necesitas dar de alta uno,
+              coordina con tu supervisor.
+            </p>
+          </div>
+
+          <div class="faq__item" data-open="false">
+            <button class="faq__question" type="button" aria-expanded="false">
+              ¿Cómo se calcula la mora de una devolución atrasada?
+              <span class="faq__caret" aria-hidden="true">▾</span>
+            </button>
+            <p class="faq__answer">
+              En Devoluciones, al elegir el código de alquiler y la fecha real de entrega, el sistema
+              compara la fecha pactada contra la fecha real y calcula automáticamente los días de atraso
+              y el monto a cobrar (S/ 25 por día, valor referencial de este prototipo).
+            </p>
+          </div>
+
+          <div class="faq__item" data-open="false">
+            <button class="faq__question" type="button" aria-expanded="false">
+              ¿Por qué no veo el documento de identidad completo del cliente?
+              <span class="faq__caret" aria-hidden="true">▾</span>
+            </button>
+            <p class="faq__answer">
+              Por política de privacidad de datos (RNF-07), el sistema enmascara el documento del cliente
+              para roles sin autorización (ej. <code>72***089</code>). Solo Gerencia/Administración puede
+              ver el número completo.
+            </p>
+          </div>
+
+          <div class="faq__item" data-open="false">
+            <button class="faq__question" type="button" aria-expanded="false">
+              Un equipo aparece "en mantenimiento", ¿qué hago?
+              <span class="faq__caret" aria-hidden="true">▾</span>
+            </button>
+            <p class="faq__answer">
+              No está disponible para alquiler mientras dure el mantenimiento. Verás el aviso en el panel
+              de Alertas del día y en Inventario, con los días transcurridos en ese estado.
+            </p>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="Contacto de soporte" style="margin-top:var(--space-5)">
+          <div class="panel__header">
+            <h2 class="panel__title">¿Necesitas más ayuda?</h2>
+          </div>
+          <p class="form-field__hint">
+            Escribe a soporte&#64;rentamax.pe o contacta a tu supervisor directo desde el punto de atención.
+          </p>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        © 2026 RentaMax · UTP Integrador II · Grupo 07 · Sprint 1 v1.1
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

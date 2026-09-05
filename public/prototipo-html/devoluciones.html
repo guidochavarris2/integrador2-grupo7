@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RentaMax — Devoluciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- P05 Devoluciones — HU-04 / RF-04 (cálculo automático de mora) -->
+  <div class="app-shell">
+
+    <header class="app-shell__header u-hide-desktop">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+      <div class="app-shell__header-actions">
+        <a class="app-shell__logout" href="index.html">⏻ Salir</a>
+      </div>
+    </header>
+
+    <nav class="app-shell__nav" aria-label="Navegación principal">
+      <div class="nav__brand u-hide-mobile">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+
+      <div class="app-shell__nav-scroll">
+        <p class="nav__group-title">Operación</p>
+        <ul>
+          <li><a class="nav__link" href="dashboard.html">📊 Dashboard</a></li>
+          <li><a class="nav__link" href="inventario.html">📦 Inventario</a></li>
+          <li><a class="nav__link" href="alquileres.html">🧾 Alquileres</a></li>
+          <li><a class="nav__link nav__link--active" href="devoluciones.html">↩️ Devoluciones</a></li>
+        </ul>
+
+        <p class="nav__group-title">Sistema</p>
+        <ul>
+          <li><a class="nav__link" href="ayuda.html">❓ Ayuda</a></li>
+          <li class="u-hide-desktop"><a class="nav__link" href="index.html">⏻ Salir</a></li>
+        </ul>
+      </div>
+
+      <div class="nav__user">
+        <span class="nav__user-avatar" aria-hidden="true">CM</span>
+        <span>
+          <span class="nav__user-name">Carlos Mendoza</span><br />
+          <span class="nav__user-role">Operador de piso</span>
+        </span>
+      </div>
+    </nav>
+
+    <div class="app-shell__main-wrap">
+      <main class="app-shell__main">
+        <div class="page-heading">
+          <div>
+            <h1 class="page-heading__title">Devoluciones</h1>
+            <p class="page-heading__desc">Cierra un alquiler activo y calcula la mora automáticamente</p>
+          </div>
+        </div>
+
+        <section class="panel" aria-label="Registrar devolución">
+          <div class="panel__header">
+            <h2 class="panel__title">Registrar devolución (RF-04)</h2>
+          </div>
+
+          <form onsubmit="return false" novalidate>
+            <div class="form-grid form-grid--2">
+              <div class="form-field">
+                <label class="form-field__label" for="alquiler">Alquiler</label>
+                <select class="form-field__select" id="alquiler" data-devolucion-alquiler required>
+                  <option value="">Selecciona un código…</option>
+                  <option value="ALQ-104" data-fecha-pactada="2026-08-19" data-equipo="EQ-001">ALQ-104 · Andamio Modular 2m · Juan Pérez</option>
+                  <option value="ALQ-107" data-fecha-pactada="2026-08-22" data-equipo="EQ-002">ALQ-107 · Cortadora de Concreto · Ana García</option>
+                  <option value="ALQ-110" data-fecha-pactada="2026-09-02" data-equipo="EQ-003">ALQ-110 · Generador 5kW · Constructora Lima Sur</option>
+                  <option value="ALQ-112" data-fecha-pactada="2026-09-05" data-equipo="EQ-010">ALQ-112 · Plataforma Elevadora Tijera · Inversiones Delta</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="fecha-real">Fecha real de devolución</label>
+                <input class="form-field__input" type="date" id="fecha-real" data-devolucion-fecha-real required />
+              </div>
+            </div>
+
+            <div class="summary-card" style="margin-top:var(--space-4)" aria-live="polite">
+              <div class="summary-card__item">
+                <p class="summary-card__label">Fecha pactada</p>
+                <p class="summary-card__value" data-devolucion-fecha-pactada>—</p>
+              </div>
+              <div class="summary-card__item">
+                <p class="summary-card__label">Días de atraso</p>
+                <p class="summary-card__value" data-devolucion-mora-dias>—</p>
+              </div>
+              <div class="summary-card__item">
+                <p class="summary-card__label">Mora a cobrar (S/ 25 / día)</p>
+                <p class="summary-card__value" data-devolucion-mora-monto>—</p>
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--2" style="margin-top:var(--space-4)">
+              <div class="form-field">
+                <label class="form-field__label" for="estado-equipo">Estado del equipo devuelto</label>
+                <select class="form-field__select" id="estado-equipo" data-devolucion-estado-equipo required>
+                  <option value="">Selecciona un estado…</option>
+                  <option value="disponible">Buen estado — sin observaciones</option>
+                  <option value="mantenimiento">Con daños — requiere mantenimiento</option>
+                  <option value="baja">Pérdida total — dar de baja</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="obs-devolucion">Observaciones (opcional)</label>
+                <input class="form-field__input" type="text" id="obs-devolucion" placeholder="Ej. Rayón leve en la base" />
+              </div>
+            </div>
+
+            <!-- Vista previa del cambio de estado en Inventario (RF-04, criterio "vuelve a Disponible") -->
+            <div class="banner" style="margin-top:var(--space-4)" data-devolucion-estado-preview-box>
+              <p class="banner__text" data-devolucion-estado-preview>
+                Selecciona el estado del equipo para ver a qué estado pasará en Inventario.
+              </p>
+            </div>
+
+            <div style="margin-top:var(--space-5); display:flex; gap:var(--space-3); flex-wrap:wrap">
+              <button class="btn btn--primary" type="submit">Confirmar devolución</button>
+              <button class="btn btn--secondary" type="reset">Limpiar formulario</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" aria-label="Historial reciente de devoluciones">
+          <div class="panel__header">
+            <h2 class="panel__title">Historial reciente</h2>
+          </div>
+          <div class="table-scroll">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">N.°</th>
+                  <th scope="col">Equipo</th>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Fecha real</th>
+                  <th scope="col">Mora</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ALQ-098</code></td>
+                  <td>Taladro Percutor SDS</td>
+                  <td>Roberto Salas</td>
+                  <td>15/08/2026</td>
+                  <td><span class="status-pill status-pill--available">Sin mora</span></td>
+                </tr>
+                <tr>
+                  <td><code>ALQ-101</code></td>
+                  <td>Compresora de Aire 50L</td>
+                  <td>María Rojas</td>
+                  <td>17/08/2026</td>
+                  <td><span class="status-pill status-pill--overdue">S/ 50.00 (2 días)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        © 2026 RentaMax · UTP Integrador II · Grupo 07 · Sprint 1 v1.1
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RentaMax — Inventario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- P03 Inventario — HU-02 / RF-02, RF-05, RF-08, RF-09, RF-10 -->
+  <div class="app-shell">
+
+    <header class="app-shell__header u-hide-desktop">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+      <div class="app-shell__header-actions">
+        <a class="app-shell__logout" href="index.html">⏻ Salir</a>
+      </div>
+    </header>
+
+    <nav class="app-shell__nav" aria-label="Navegación principal">
+      <div class="nav__brand u-hide-mobile">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+
+      <div class="app-shell__nav-scroll">
+        <p class="nav__group-title">Operación</p>
+        <ul>
+          <li><a class="nav__link" href="dashboard.html">📊 Dashboard</a></li>
+          <li><a class="nav__link nav__link--active" href="inventario.html">📦 Inventario</a></li>
+          <li><a class="nav__link" href="alquileres.html">🧾 Alquileres</a></li>
+          <li><a class="nav__link" href="devoluciones.html">↩️ Devoluciones</a></li>
+        </ul>
+
+        <p class="nav__group-title">Sistema</p>
+        <ul>
+          <li><a class="nav__link" href="ayuda.html">❓ Ayuda</a></li>
+          <li class="u-hide-desktop"><a class="nav__link" href="index.html">⏻ Salir</a></li>
+        </ul>
+      </div>
+
+      <div class="nav__user">
+        <span class="nav__user-avatar" aria-hidden="true">CM</span>
+        <span>
+          <span class="nav__user-name">Carlos Mendoza</span><br />
+          <span class="nav__user-role">Operador de piso</span>
+        </span>
+      </div>
+    </nav>
+
+    <div class="app-shell__main-wrap">
+      <main class="app-shell__main">
+        <div class="page-heading">
+          <div>
+            <h1 class="page-heading__title">Inventario</h1>
+            <p class="page-heading__desc">12 equipos registrados · actualizado hoy</p>
+          </div>
+          <button class="btn btn--primary" type="button" disabled
+            title="Tu rol (Operador de piso) no tiene permiso para dar de alta equipos — RF-09">
+            + Nuevo equipo
+          </button>
+        </div>
+
+        <section class="banner banner--warning" aria-label="Alerta de stock mínimo">
+          <p class="banner__text">
+            ⚠ 2 categorías están por debajo del stock mínimo: <strong>Compactación</strong> (1 unidad) y
+            <strong>Elevación</strong> (1 unidad). Coordina reposición o mantenimiento preventivo con tu supervisor.
+          </p>
+        </section>
+
+        <section class="panels-grid" aria-label="Catálogo de equipos">
+          <div class="panel">
+            <div class="panel__header">
+              <h2 class="panel__title">Equipos</h2>
+            </div>
+
+            <form class="toolbar" role="search" aria-label="Filtrar inventario" onsubmit="return false">
+              <div class="form-field">
+                <label class="form-field__label" for="buscar">Buscar</label>
+                <input class="form-field__input" type="search" id="buscar" placeholder="Código o nombre del equipo" data-inventory-search />
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="estado">Estado</label>
+                <select class="form-field__select" id="estado" data-inventory-status>
+                  <option value="todos">Todos</option>
+                  <option value="disponible">Disponible</option>
+                  <option value="alquilado">Alquilado</option>
+                  <option value="atrasado">Atrasado</option>
+                  <option value="mantenimiento">En mantenimiento</option>
+                </select>
+              </div>
+            </form>
+
+            <div class="table-scroll">
+              <table class="table" data-inventory-table>
+                <thead>
+                  <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Equipo</th>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col"><span class="visually-hidden">Acciones</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-status="alquilado">
+                    <td><code>EQ-001</code></td>
+                    <td>Andamio Modular 2m</td>
+                    <td>Andamios</td>
+                    <td><span class="status-pill status-pill--rented">Alquilado</span></td>
+                    <td><a href="alquileres.html">Ver alquiler</a></td>
+                  </tr>
+                  <tr data-status="atrasado">
+                    <td><code>EQ-002</code></td>
+                    <td>Cortadora de Concreto</td>
+                    <td>Corte</td>
+                    <td><span class="status-pill status-pill--overdue">Atrasado 1 día</span></td>
+                    <td><a href="devoluciones.html">Devolver</a></td>
+                  </tr>
+                  <tr data-status="alquilado">
+                    <td><code>EQ-003</code></td>
+                    <td>Generador 5kW</td>
+                    <td>Energía</td>
+                    <td><span class="status-pill status-pill--rented">Alquilado</span></td>
+                    <td><a href="alquileres.html">Ver alquiler</a></td>
+                  </tr>
+                  <tr data-status="mantenimiento">
+                    <td><code>EQ-004</code></td>
+                    <td>Compactadora de Placa</td>
+                    <td>Compactación</td>
+                    <td><span class="status-pill status-pill--maintenance">Mantenimiento 8 días</span></td>
+                    <td><span class="form-field__hint">Sin acción disponible</span></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-005</code></td>
+                    <td>Andamio Modular 3m</td>
+                    <td>Andamios</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-006</code></td>
+                    <td>Mezcladora de Concreto 1 saco</td>
+                    <td>Concreto</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-007</code></td>
+                    <td>Taladro Percutor SDS</td>
+                    <td>Herramienta menor</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-008</code></td>
+                    <td>Rotomartillo 5kg</td>
+                    <td>Herramienta menor</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-009</code></td>
+                    <td>Vibrador de Concreto</td>
+                    <td>Concreto</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                  <tr data-status="alquilado">
+                    <td><code>EQ-010</code></td>
+                    <td>Plataforma Elevadora Tijera</td>
+                    <td>Elevación</td>
+                    <td><span class="status-pill status-pill--rented">Alquilado</span></td>
+                    <td><a href="alquileres.html">Ver alquiler</a></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-011</code></td>
+                    <td>Soldadora Inversora 200A</td>
+                    <td>Soldadura</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                  <tr data-status="disponible">
+                    <td><code>EQ-012</code></td>
+                    <td>Compresora de Aire 50L</td>
+                    <td>Neumática</td>
+                    <td><span class="status-pill status-pill--available">Disponible</span></td>
+                    <td><a href="alquileres.html">Alquilar</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="empty-state" data-inventory-empty style="display:none">
+              <span class="empty-state__icon" aria-hidden="true">🔍</span><br />
+              No se encontraron equipos con ese criterio de búsqueda.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="panel__header">
+              <h2 class="panel__title">Categorías (RF-08)</h2>
+            </div>
+            <ul class="alert-list">
+              <li class="alert-item"><span><p class="alert-item__text">Andamios</p><p class="alert-item__meta">2 equipos</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Corte</p><p class="alert-item__meta">1 equipo</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Compactación</p><p class="alert-item__meta">1 equipo · stock mínimo</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Energía</p><p class="alert-item__meta">1 equipo</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Concreto</p><p class="alert-item__meta">2 equipos</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Herramienta menor</p><p class="alert-item__meta">2 equipos</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Elevación</p><p class="alert-item__meta">1 equipo · stock mínimo</p></span></li>
+              <li class="alert-item"><span><p class="alert-item__text">Soldadura / Neumática</p><p class="alert-item__meta">1 equipo c/u</p></span></li>
+            </ul>
+            <p class="form-field__hint" style="margin-top:var(--space-3)">
+              Solo Gerencia/Administración puede crear o editar categorías (RF-09).
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        © 2026 RentaMax · UTP Integrador II · Grupo 07 · Sprint 1 v1.1
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

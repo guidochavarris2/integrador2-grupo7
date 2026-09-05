@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RentaMax — Alquileres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- P04 Alquileres — HU-03 / RF-03 (RNF-07: documento del cliente enmascarado) -->
+  <div class="app-shell">
+
+    <header class="app-shell__header u-hide-desktop">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+      <div class="app-shell__header-actions">
+        <a class="app-shell__logout" href="index.html">⏻ Salir</a>
+      </div>
+    </header>
+
+    <nav class="app-shell__nav" aria-label="Navegación principal">
+      <div class="nav__brand u-hide-mobile">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        RentaMax
+      </div>
+
+      <div class="app-shell__nav-scroll">
+        <p class="nav__group-title">Operación</p>
+        <ul>
+          <li><a class="nav__link" href="dashboard.html">📊 Dashboard</a></li>
+          <li><a class="nav__link" href="inventario.html">📦 Inventario</a></li>
+          <li><a class="nav__link nav__link--active" href="alquileres.html">🧾 Alquileres</a></li>
+          <li><a class="nav__link" href="devoluciones.html">↩️ Devoluciones</a></li>
+        </ul>
+
+        <p class="nav__group-title">Sistema</p>
+        <ul>
+          <li><a class="nav__link" href="ayuda.html">❓ Ayuda</a></li>
+          <li class="u-hide-desktop"><a class="nav__link" href="index.html">⏻ Salir</a></li>
+        </ul>
+      </div>
+
+      <div class="nav__user">
+        <span class="nav__user-avatar" aria-hidden="true">CM</span>
+        <span>
+          <span class="nav__user-name">Carlos Mendoza</span><br />
+          <span class="nav__user-role">Operador de piso</span>
+        </span>
+      </div>
+    </nav>
+
+    <div class="app-shell__main-wrap">
+      <main class="app-shell__main">
+        <div class="page-heading">
+          <div>
+            <h1 class="page-heading__title">Alquileres</h1>
+            <p class="page-heading__desc">Registra un nuevo alquiler o consulta los activos</p>
+          </div>
+        </div>
+
+        <section class="panel" aria-label="Registrar nuevo alquiler">
+          <div class="panel__header">
+            <h2 class="panel__title">Nuevo alquiler (RF-03)</h2>
+          </div>
+
+          <form onsubmit="return false" novalidate>
+            <div class="form-grid form-grid--2">
+              <div class="form-field">
+                <label class="form-field__label" for="cliente-nombre">Nombre del cliente</label>
+                <input class="form-field__input" type="text" id="cliente-nombre" placeholder="Ej. Juan Pérez" required />
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="cliente-doc">Documento (DNI)</label>
+                <input class="form-field__input" type="text" id="cliente-doc" placeholder="Ej. 72450089" inputmode="numeric" maxlength="8" required />
+                <p class="form-field__hint">Se mostrará enmascarado a roles sin autorización, ej. <code>72***089</code> (RNF-07).</p>
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--2" style="margin-top:var(--space-4)">
+              <div class="form-field">
+                <label class="form-field__label" for="equipo">Equipo disponible</label>
+                <select class="form-field__select" id="equipo" data-alquiler-equipo required>
+                  <option value="">Selecciona un equipo…</option>
+                  <option value="EQ-005">EQ-005 · Andamio Modular 3m</option>
+                  <option value="EQ-006">EQ-006 · Mezcladora de Concreto 1 saco</option>
+                  <option value="EQ-007">EQ-007 · Taladro Percutor SDS</option>
+                  <option value="EQ-008">EQ-008 · Rotomartillo 5kg</option>
+                  <option value="EQ-009">EQ-009 · Vibrador de Concreto</option>
+                  <option value="EQ-011">EQ-011 · Soldadora Inversora 200A</option>
+                  <option value="EQ-012">EQ-012 · Compresora de Aire 50L</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="observaciones">Observaciones</label>
+                <input class="form-field__input" type="text" id="observaciones" placeholder="Opcional" />
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--2" style="margin-top:var(--space-4)">
+              <div class="form-field">
+                <label class="form-field__label" for="fecha-inicio">Fecha de inicio</label>
+                <input class="form-field__input" type="date" id="fecha-inicio" data-alquiler-fecha-inicio required />
+              </div>
+              <div class="form-field">
+                <label class="form-field__label" for="fecha-fin">Fecha pactada de devolución</label>
+                <input class="form-field__input" type="date" id="fecha-fin" data-alquiler-fecha-fin required />
+                <p class="form-field__hint">Sugerida automáticamente a 7 días; puedes ajustarla.</p>
+              </div>
+            </div>
+
+            <div style="margin-top:var(--space-5); display:flex; gap:var(--space-3); flex-wrap:wrap">
+              <button class="btn btn--primary" type="submit">Registrar alquiler</button>
+              <button class="btn btn--secondary" type="reset">Limpiar formulario</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" aria-label="Alquileres activos">
+          <div class="panel__header">
+            <h2 class="panel__title">Alquileres activos</h2>
+          </div>
+          <div class="table-scroll">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">N.°</th>
+                  <th scope="col">Equipo</th>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Documento</th>
+                  <th scope="col">Fin pactado</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col"><span class="visually-hidden">Acciones</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>ALQ-104</code></td>
+                  <td>Andamio Modular 2m</td>
+                  <td>Juan Pérez</td>
+                  <td><code>72***089</code></td>
+                  <td>19/08/2026</td>
+                  <td><span class="status-pill status-pill--overdue">Atrasado 4 días</span></td>
+                  <td><a href="devoluciones.html">Devolver</a></td>
+                </tr>
+                <tr>
+                  <td><code>ALQ-107</code></td>
+                  <td>Cortadora de concreto</td>
+                  <td>Ana García</td>
+                  <td><code>45***217</code></td>
+                  <td>22/08/2026</td>
+                  <td><span class="status-pill status-pill--overdue">Atrasado 1 día</span></td>
+                  <td><a href="devoluciones.html">Devolver</a></td>
+                </tr>
+                <tr>
+                  <td><code>ALQ-110</code></td>
+                  <td>Generador 5kW</td>
+                  <td>Constructora Lima Sur</td>
+                  <td><code>20***045</code></td>
+                  <td>02/09/2026</td>
+                  <td><span class="status-pill status-pill--rented">Vigente</span></td>
+                  <td><a href="devoluciones.html">Devolver</a></td>
+                </tr>
+                <tr>
+                  <td><code>ALQ-112</code></td>
+                  <td>Plataforma Elevadora Tijera</td>
+                  <td>Inversiones Delta</td>
+                  <td><code>10***772</code></td>
+                  <td>05/09/2026</td>
+                  <td><span class="status-pill status-pill--rented">Vigente</span></td>
+                  <td><a href="devoluciones.html">Devolver</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        © 2026 RentaMax · UTP Integrador II · Grupo 07 · Sprint 1 v1.1
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
