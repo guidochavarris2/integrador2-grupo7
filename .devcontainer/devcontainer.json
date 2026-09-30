@@ -1,0 +1,11 @@
+{
+  "name": "RentaMax Backend (Java 21 + Maven + Docker)",
+  "image": "mcr.microsoft.com/devcontainers/java:21",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": { "version": "none", "installMaven": "true" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": { "moby": false }
+  },
+  "forwardPorts": [8080],
+  "portsAttributes": { "8080": { "label": "API RentaMax" } },
+  "postStartCommand": "docker compose -f backend/docker-compose.yml up -d || true"
+}
