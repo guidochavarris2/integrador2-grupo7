@@ -1,7 +1,16 @@
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
 
-const base = "http://127.0.0.1:8080";
+// Sin secretos en el repositorio: las claves se pasan por variables de entorno.
+//   QA_BASE_URL=https://integrador2-grupo7.vercel.app QA_PASS_OPERADOR=... QA_PASS_SUPERVISOR=... QA_PASS_ADMIN=... node scripts/qa-security.mjs
+const base = process.env.QA_BASE_URL;
+const passOperador = process.env.QA_PASS_OPERADOR;
+const passSupervisor = process.env.QA_PASS_SUPERVISOR;
+const passAdmin = process.env.QA_PASS_ADMIN;
+if (!base || !passOperador || !passSupervisor || !passAdmin) {
+  console.error("Define QA_BASE_URL, QA_PASS_OPERADOR, QA_PASS_SUPERVISOR y QA_PASS_ADMIN");
+  process.exit(1);
+}
 await mkdir("/workspace/screenshots", { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const errors = [];
@@ -26,7 +35,7 @@ try {
   });
 
   // 1. Operador login
-  await login(page, "carlos.mendoza@rentamax.pe", "RentaMax2026");
+  await login(page, "carlos.mendoza@rentamax.pe", passOperador);
   await page.waitForTimeout(400);
   const opText = await page.locator("body").innerText();
   if (!/Operador de piso/i.test(opText)) errors.push("operador: no ve su rol");
@@ -63,7 +72,7 @@ try {
   // 4. Logout and login admin
   await page.getByRole("button", { name: /Salir/ }).click();
   await page.waitForURL("**/login");
-  await login(page, "admin@rentamax.pe", "Admin2026");
+  await login(page, "admin@rentamax.pe", passAdmin);
   await page.waitForTimeout(400);
   const ad = await page.locator("body").innerText();
   if (!/Administración/i.test(ad)) errors.push("admin: no ve rol");
@@ -80,7 +89,7 @@ try {
   // 5. Supervisora sees alta, not seguridad
   await page.getByRole("button", { name: /Salir/ }).click();
   await page.waitForURL("**/login");
-  await login(page, "ana.silva@rentamax.pe", "RentaMax2026");
+  await login(page, "ana.silva@rentamax.pe", passSupervisor);
   await page.waitForTimeout(300);
   if (await page.getByRole("link", { name: "Seguridad" }).count()) {
     errors.push("supervisora: ve Seguridad");
@@ -103,7 +112,7 @@ try {
   await shot(page, "sec-07-login-fail");
 
   // 7. Mobile operador
-  await login(page, "carlos.mendoza@rentamax.pe", "RentaMax2026");
+  await login(page, "carlos.mendoza@rentamax.pe", passOperador);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(300);
   await shot(page, "sec-08-mobile");

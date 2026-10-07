@@ -5,3 +5,8 @@ node_modules
 dist
 *.log
 .DS_Store
+
+# Variables de entorno locales (nunca se suben)
+.env
+.env.*
+!.env.example

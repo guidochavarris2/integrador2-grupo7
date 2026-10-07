@@ -1,0 +1,7 @@
+== 100 peticiones, 10 en paralelo, contra https://rentamax-backend.onrender.com/api/equipos
+Respuestas HTTP 200 : 100 de 100
+Latencia promedio   : 968 ms
+Latencia p50 / p95  : 836 ms / 1732 ms
+Latencia maxima     : 2116 ms
+Duracion total      : 12.16 s  (~8.2 peticiones/s)
+RESULTADO: OK (sin errores bajo carga)

@@ -1,0 +1,26 @@
+# OPCIONAL (solo si usas Docker): levanta MySQL 8 ya con el esquema y los datos de demostracion.
+# Las claves NO estan en este archivo: crea backend/.env (esta en .gitignore) con
+#   MYSQL_PASSWORD=<tu-clave>  y  MYSQL_ROOT_PASSWORD=<otra-clave>
+# y luego:  cd backend && docker compose up -d
+# Si usas el MySQL instalado en tu laptop, NO necesitas este archivo.
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: rentamax-mysql
+    environment:
+      MYSQL_DATABASE: rentamax
+      MYSQL_USER: rentamax
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Define MYSQL_PASSWORD en .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Define MYSQL_ROOT_PASSWORD en .env}
+    ports:
+      - "3306:3306"
+    volumes:
+      - rentamax-data:/var/lib/mysql
+      - ../database/schema_v1.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ../database/seed_v1.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --silent -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      retries: 20
+volumes:
+  rentamax-data:

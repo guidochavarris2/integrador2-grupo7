@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+.vscode/
+*.log
+*.md
+pruebas.sh
+rendimiento.sh
+*.postman_collection.json
+docker-compose.yml

@@ -1,0 +1,18 @@
+# PLANTILLA para desarrollo en tu laptop. Sin secretos reales.
+# 1) Copia este archivo como  application-local.properties  (esa copia esta en .gitignore y NO se sube a GitHub).
+# 2) Reemplaza los valores <...> por los tuyos.
+# 3) Ejecuta con el perfil local:  mvn spring-boot:run -Dspring-boot.run.profiles=local
+
+spring.datasource.url=jdbc:mysql://<host>:3306/<base>?serverTimezone=America/Lima
+spring.datasource.username=<usuario>
+spring.datasource.password=<contrasena>
+
+# Genera una clave propia (Base64, 256 bits o mas), por ejemplo:  openssl rand -base64 48
+app.jwt.secret=<clave-base64-generada-por-ti>
+
+# Solo tu front-end local
+app.cors.allowed-origins=http://localhost:5173
+
+# Opcional: administrador inicial
+# app.admin.email=<correo>
+# app.admin.password=<contrasena-fuerte>

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { BackendCheck } from "@/components/BackendCheck";
 import { RequireRole } from "@/components/RequireRole";
 import { useRentaStore, type AuditKind } from "@/lib/rentamax/store";
 import { cn } from "@/lib/utils";
@@ -38,13 +39,14 @@ function SeguridadPage() {
             <ShieldCheck className="size-3.5" /> Controles activos
           </p>
           <ul className="mt-3 space-y-2 text-sm text-navy-muted">
-            <li>Autenticación con hash SHA-256 (sal + correo)</li>
-            <li>Autorización por rol en UI y en cada acción</li>
+            <li>Login en el servidor: contraseñas con hash BCrypt (coste 10)</li>
+            <li>Token JWT firmado (HS256) con expiración</li>
+            <li>Cabecera Authorization: Bearer en cada llamada al API</li>
+            <li>CORS limitado al dominio del front (sin *)</li>
+            <li>Autorización por rol en UI y en el servidor (401 / 403)</li>
             <li>Bloqueo 2 min tras 5 intentos (fuerza bruta)</li>
-            <li>Sesión: 30 min inactividad / 8 h máximo</li>
-            <li>Sanitización XSS en nombres y observaciones</li>
-            <li>DNI enmascarado para el operador</li>
-            <li>Comparación de hash en tiempo constante</li>
+            <li>Sesión: 30 min inactividad / 8 h máximo / vence el JWT</li>
+            <li>Sanitización XSS · DNI enmascarado para el operador</li>
           </ul>
         </article>
         <article className="rounded-[16px] bg-surface p-5 shadow-card lg:col-span-2">
@@ -69,12 +71,18 @@ function SeguridadPage() {
                 Token de sesión
               </dt>
               <dd className="truncate font-mono text-[12px] text-ink-soft">
-                {session?.token}
+                {session ? `${session.token.slice(0, 24)}…` : ""}
+              </dd>
+              <dd className="text-[12px] text-muted">
+                JWT del servidor · vence{" "}
+                {session ? new Date(session.expiresAt).toLocaleTimeString("es-PE") : ""}
               </dd>
             </div>
           </dl>
         </article>
       </div>
+
+      <BackendCheck />
 
       <section className="mt-5 rounded-[18px] bg-surface p-4 shadow-card sm:p-5">
         <h2 className="font-display text-lg font-bold text-ink">

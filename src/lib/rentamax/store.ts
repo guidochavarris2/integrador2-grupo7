@@ -1,17 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Rol } from "@/lib/rentamax/security";
+import { ApiError, apiLogin, nameFromEmail } from "@/lib/rentamax/api";
 import {
   AUDIT_LIMIT,
   LOGIN_LOCK_MS,
   LOGIN_MAX_FAILS,
   can,
-  hashPassword,
   remainingLockMs,
   sanitizeName,
   sanitizeText,
   sessionExpired,
-  timingSafeEqual,
 } from "@/lib/rentamax/security";
 
 export type { Rol };
@@ -35,7 +34,10 @@ export type Session = {
   email: string;
   nombre: string;
   rol: Rol;
+  /** JWT firmado por el backend (se envia como "Authorization: Bearer <token>"). */
   token: string;
+  /** Instante (ms) en que vence el JWT segun el servidor. */
+  expiresAt: number;
   issuedAt: number;
   lastSeen: number;
 };
@@ -76,41 +78,6 @@ export type AuditEvent = {
   rol?: Rol;
   detail: string;
 };
-
-export type DemoUser = {
-  email: string;
-  password: string;
-  passwordHash: string;
-  nombre: string;
-  rol: Rol;
-};
-
-export const DEMO_USERS: DemoUser[] = [
-  {
-    email: "carlos.mendoza@rentamax.pe",
-    password: "RentaMax2026",
-    passwordHash:
-      "67ba599b8ca9c5e6e1b6f502e630736dfba812a910ddead5850f83a95388da4e",
-    nombre: "Carlos Mendoza",
-    rol: "Operador",
-  },
-  {
-    email: "ana.silva@rentamax.pe",
-    password: "RentaMax2026",
-    passwordHash:
-      "dc59f3cc0c6c51766ccdbe54fd2d8a07a9b5808f69be13cbd86e68a6fc038090",
-    nombre: "Ana Silva",
-    rol: "Supervisora",
-  },
-  {
-    email: "admin@rentamax.pe",
-    password: "Admin2026",
-    passwordHash:
-      "b893429046efa7286e5810c49abee0c9c2a86c3b2ff6ca918f67a10ddf0552a5",
-    nombre: "Elmer Herrera",
-    rol: "Administrador",
-  },
-];
 
 export function todayIso(d = new Date()) {
   const y = d.getFullYear();
@@ -439,11 +406,17 @@ export const useRentaStore = create<Store>()(
       clearNotice: () => set({ notice: null }),
       expireIfNeeded: () => {
         const session = get().session;
-        if (!session || !session.issuedAt || !session.lastSeen) {
+        // Una sesion sin fecha de vencimiento del JWT es de una version anterior: se descarta.
+        if (!session || !session.issuedAt || !session.lastSeen || !session.expiresAt) {
           if (session) set({ session: null });
           return Boolean(session);
         }
-        const why = sessionExpired(session.issuedAt, session.lastSeen);
+        const why = sessionExpired(
+          session.issuedAt,
+          session.lastSeen,
+          Date.now(),
+          session.expiresAt,
+        );
         if (!why) return false;
         set({
           session: null,
@@ -460,7 +433,9 @@ export const useRentaStore = create<Store>()(
       touchSession: () => {
         const session = get().session;
         if (!session) return;
-        if (sessionExpired(session.issuedAt, session.lastSeen)) {
+        if (
+          sessionExpired(session.issuedAt, session.lastSeen, Date.now(), session.expiresAt)
+        ) {
           get().expireIfNeeded();
           return;
         }
@@ -487,10 +462,22 @@ export const useRentaStore = create<Store>()(
         if (!key || !password) {
           return { ok: false, error: "Ingrese correo y contraseña." };
         }
-        const user = DEMO_USERS.find((u) => u.email.toLowerCase() === key);
-        const hash = await hashPassword(key, password);
-        const valid = user ? timingSafeEqual(hash, user.passwordHash) : false;
-        if (!user || !valid) {
+        // La contrasena viaja por HTTPS al backend, que la compara contra el hash BCrypt
+        // guardado en MySQL. El front no conoce ni guarda ninguna contrasena.
+        let auth;
+        try {
+          auth = await apiLogin(key, password);
+        } catch (err) {
+          const status = err instanceof ApiError ? err.status : 0;
+          const message =
+            err instanceof ApiError
+              ? err.message
+              : "No se pudo iniciar sesión. Intente de nuevo.";
+          // Solo las credenciales rechazadas (401) cuentan para el bloqueo de 2 minutos;
+          // una caida del servidor no debe bloquear al usuario.
+          if (status !== 401) {
+            return { ok: false, error: message };
+          }
           const fails = (lock?.fails ?? 0) + 1;
           const until = fails >= LOGIN_MAX_FAILS ? Date.now() + LOGIN_LOCK_MS : 0;
           set({
@@ -510,17 +497,15 @@ export const useRentaStore = create<Store>()(
                 "Cuenta bloqueada 2 minutos por intentos fallidos. Es una defensa ante fuerza bruta.",
             };
           }
-          return { ok: false, error: "Correo o contraseña incorrectos." };
+          return { ok: false, error: message };
         }
         const now = Date.now();
         const session: Session = {
-          email: user.email,
-          nombre: user.nombre,
-          rol: user.rol,
-          token:
-            typeof crypto !== "undefined" && "randomUUID" in crypto
-              ? crypto.randomUUID()
-              : `tok-${now}`,
+          email: auth.email,
+          nombre: nameFromEmail(auth.email),
+          rol: auth.rol,
+          token: auth.token,
+          expiresAt: auth.expiresAt,
           issuedAt: now,
           lastSeen: now,
         };
@@ -531,9 +516,9 @@ export const useRentaStore = create<Store>()(
           notice: null,
           audit: pushAudit(get().audit, {
             kind: "login_ok",
-            actor: user.email,
-            rol: user.rol,
-            detail: `Inicio de sesión (${user.rol})`,
+            actor: session.email,
+            rol: session.rol,
+            detail: `Inicio de sesión (${session.rol}) · JWT emitido por el servidor`,
           }),
         });
         return { ok: true, session };

@@ -75,10 +75,10 @@ export const HELP_TOPICS: HelpTopic[] = [
     title: "No puedo iniciar sesión",
     problem: "El correo o la contraseña no coinciden, o la cuenta está bloqueada.",
     steps: [
-      "Verifique mayúsculas en la contraseña. En la demo: RentaMax2026 (operador/supervisora) o Admin2026 (admin).",
+      "Verifique mayúsculas en la contraseña. Si no la tiene, pídala al administrador o al equipo del proyecto.",
       "Si aparece “cuenta bloqueada”, espere 2 minutos. Es la defensa ante fuerza bruta.",
       "Si ve “sesión expirada”, vuelva a entrar. La sesión caduca a los 30 minutos de inactividad.",
-      "No cree cuentas nuevas: esta versión usa tres usuarios de demostración.",
+      "Si el servidor estuvo inactivo, la primera conexión puede tardar hasta un minuto: espere y reintente.",
     ],
   },
   {
@@ -147,7 +147,7 @@ export const HELP_TOPICS: HelpTopic[] = [
     title: "Quiero volver a los datos de ejemplo",
     problem: "Los cambios de prueba dejaron el inventario distinto al de la demo.",
     steps: [
-      "Entre como Administrador (admin@rentamax.pe / Admin2026).",
+      "Entre como Administrador.",
       "Use el botón Demo en la barra superior. Pedirá confirmación.",
       "Se restauran los 12 equipos y los alquileres de ejemplo, incluida ALQ-104 atrasada.",
     ],

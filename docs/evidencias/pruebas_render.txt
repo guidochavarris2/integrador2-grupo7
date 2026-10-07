@@ -1,0 +1,61 @@
+== RentaMax pruebas contra: https://rentamax-backend.onrender.com
+-- 1. Salud y base de datos
+  OK     Health check (HTTP 200)
+  OK     Base de datos conectada
+-- 2. Sin token o con token invalido (401)
+  OK     GET /api/equipos sin token (HTTP 401)
+  OK     GET /api/equipos con token falso (HTTP 401)
+-- 3. Validacion de entradas, XSS e inyeccion SQL
+  OK     Registro con XSS y datos invalidos (HTTP 400)
+  OK     SQLi en el correo (formato invalido) (HTTP 400)
+  OK     SQLi en la contrasena (credenciales invalidas) (HTTP 401)
+  OK     Login con clave incorrecta (HTTP 401)
+-- 4. Registro publico (siempre crea OPERADOR)
+  OK     Registro valido (HTTP 201)
+  OK     Rol asignado OPERADOR
+  OK     No expone el hash
+  OK     Registro duplicado (HTTP 409)
+-- 5. Rol OPERADOR (solo lectura)
+  OK     Login operador (HTTP 200)
+  OK     Token JWT recibido
+  OK     Listar equipos (desde la BD) (HTTP 200)
+  OK     Aparece EQ-001 del seed
+  OK     Filtrar por estado (HTTP 200)
+  OK     Sin equipos ALQUILADOS en el filtro
+  OK     Equipo inexistente (HTTP 404)
+  OK     Id con formato invalido (HTTP 400)
+  OK     Listar categorias (HTTP 200)
+  OK     Listar clientes (HTTP 200)
+  OK     Telefono enmascarado para OPERADOR
+  OK     Telefono completo oculto
+  OK     OPERADOR no puede crear equipos (HTTP 403)
+  OK     OPERADOR no puede eliminar (HTTP 403)
+  OK     OPERADOR no entra a /api/admin (HTTP 403)
+-- 6. Rol SUPERVISOR (alta y edicion de equipos)
+  OK     Login supervisor (HTTP 200)
+  OK     Listar clientes (HTTP 200)
+  OK     Telefono completo para SUPERVISOR
+  OK     Crear equipo (HTTP 201)
+  OK     Id generado por la BD: 13
+  OK     Codigo duplicado (HTTP 409)
+  OK     XSS en el nombre del equipo (HTTP 400)
+  OK     Estado fuera del catalogo (HTTP 400)
+  OK     Categoria inexistente (HTTP 400)
+  OK     Editar equipo (HTTP 200)
+  OK     Cambio de estado guardado
+  OK     SUPERVISOR no puede eliminar (HTTP 403)
+-- 7. Rol ADMINISTRADOR
+  OK     Login administrador (HTTP 200)
+  OK     Listar usuarios (HTTP 200)
+  OK     No expone contrasena_hash
+  OK     No expone hashes BCrypt
+  OK     Listar roles y permisos (tabla rol) (HTTP 200)
+  OK     Permisos desde la BD
+  OK     Eliminar equipo de prueba (HTTP 204)
+  OK     Equipo eliminado ya no existe (HTTP 404)
+-- 8. Token alterado y CORS
+  OK     Token con firma alterada (HTTP 401)
+  OK     CORS permite el front de Vercel
+  OK     CORS bloquea un origen no autorizado (HTTP 403)
+
+=== RESULTADO: OK=50  FALLOS=0 ===

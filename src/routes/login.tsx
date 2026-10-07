@@ -1,13 +1,13 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CircleHelp, Eye, EyeOff, Info } from "lucide-react";
+import { CircleHelp, Eye, EyeOff } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { RedirectIfAuthed } from "@/components/RequireSession";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { DEMO_USERS, useRentaStore } from "@/lib/rentamax/store";
-import { roleLabel } from "@/lib/rentamax/security";
+import { API_CONFIGURED } from "@/lib/rentamax/api";
+import { useRentaStore } from "@/lib/rentamax/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/login")({
@@ -27,13 +27,25 @@ function LoginPage() {
   const notice = useRentaStore((s) => s.notice);
   const clearNotice = useRentaStore((s) => s.clearNotice);
   const navigate = useNavigate();
-  const [email, setEmail] = useState("carlos.mendoza@rentamax.pe");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shake, setShake] = useState(0);
   const [hint, setHint] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [waking, setWaking] = useState(false);
+
+  // El backend gratuito de Render se duerme tras un rato sin uso: avisamos si la primera
+  // respuesta tarda, para que nadie piense que la pagina se colgo.
+  useEffect(() => {
+    if (!busy) {
+      setWaking(false);
+      return;
+    }
+    const id = window.setTimeout(() => setWaking(true), 4000);
+    return () => window.clearTimeout(id);
+  }, [busy]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -41,6 +53,11 @@ function LoginPage() {
     clearNotice();
     if (!email.trim() || !password) {
       setError("Ingrese correo y contraseña.");
+      setShake((n) => n + 1);
+      return;
+    }
+    if (!API_CONFIGURED) {
+      setError("El sistema no tiene configurada la dirección del servidor (VITE_API_URL).");
       setShake((n) => n + 1);
       return;
     }
@@ -113,7 +130,7 @@ function LoginPage() {
                 className="mt-1.5"
                 type="email"
                 autoComplete="username"
-                placeholder="operador@rentamax.pe"
+                placeholder="usuario@rentamax.pe"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -146,6 +163,16 @@ function LoginPage() {
             {busy ? "Verificando…" : "Iniciar sesión"}
           </Button>
 
+          {waking ? (
+            <p
+              role="status"
+              className="mt-3 rounded-[12px] bg-info-soft px-3.5 py-2.5 text-[13px] text-info"
+            >
+              Conectando con el servidor. Si estuvo inactivo puede tardar hasta un
+              minuto en despertar.
+            </p>
+          ) : null}
+
           <button
             type="button"
             className="mt-4 w-full text-center text-sm font-medium text-muted hover:text-brand"
@@ -156,40 +183,11 @@ function LoginPage() {
 
           {hint ? (
             <p className="mt-3 rounded-[12px] bg-info-soft px-3.5 py-2.5 text-[13px] text-info">
-              En producción el administrador restablece el acceso. En esta
-              demostración use las cuentas de abajo. Tras 5 fallos la cuenta se
-              bloquea 2 minutos.
+              El administrador restablece el acceso. Pida sus credenciales al
+              equipo del proyecto. Tras 5 fallos la cuenta se bloquea 2 minutos.
             </p>
           ) : null}
         </form>
-
-        <div className="mt-5 rounded-[16px] bg-navy/90 p-4 text-navy-fg shadow-soft">
-          <p className="flex items-center gap-2 text-[12px] font-bold tracking-wide text-brand-ring uppercase">
-            <Info className="size-3.5" /> Cuentas de demostración
-          </p>
-          <ul className="mt-2 space-y-1.5 text-[13px] text-navy-muted">
-            {DEMO_USERS.map((u) => (
-              <li key={u.email}>
-                <button
-                  type="button"
-                  className="w-full rounded-[8px] px-1 py-1 text-left hover:bg-white/8"
-                  onClick={() => {
-                    setEmail(u.email);
-                    setPassword(u.password);
-                    setError(null);
-                    clearNotice();
-                  }}
-                >
-                  <span className="font-semibold text-navy-fg">{roleLabel(u.rol)}</span>
-                  <span className="block text-[12px]">
-                    {u.email}
-                    <span className="text-navy-muted"> / {u.password}</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
 
         <p className="mt-4 text-center">
           <Link

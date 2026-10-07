@@ -1,0 +1,4 @@
+# Fin de linea correcto en Windows/Linux (el Maven Wrapper y los scripts fallan si cambia)
+mvnw        text eol=lf
+*.sh        text eol=lf
+mvnw.cmd    text eol=crlf

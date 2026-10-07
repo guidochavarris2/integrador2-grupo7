@@ -7,7 +7,7 @@ Alineada al sílabo (Unidad 2: autenticación, autorización, cifrado, ataques c
 | Riesgo | Antes | Ahora |
 |--------|-------|--------|
 | Todos los roles veían el mismo menú | Sin RBAC | Operador / Supervisora / Administrador con menú y acciones distintas |
-| Contraseña en claro al comparar | Igualdad directa | SHA-256 + sal `rmx-v1\|correo\|clave` y comparación en tiempo constante |
+| Contraseñas en el código del front | Usuarios y claves de demostración escritos en `store.ts`, en la ayuda y en la pantalla de login | Ninguna credencial en el front: el login llama al backend, que compara con BCrypt (coste 10) y devuelve un JWT con expiración |
 | Fuerza bruta en login | Ilimitado | 5 intentos → bloqueo 2 min |
 | Sesión eterna | localStorage sin caducidad | 30 min inactividad / 8 h máximo + token |
 | XSS en nombre/observaciones | Texto crudo | Sanitización (sin HTML ni caracteres peligrosos) |
@@ -22,11 +22,10 @@ Alineada al sílabo (Unidad 2: autenticación, autorización, cifrado, ataques c
 - Persistencia migrada a `rentamax-v2` (evita sesiones viejas rotas).
 - Fechas en calendario UTC (no se desfasen “vence mañana”).
 - Layout móvil ~390px sin desborde horizontal.
-- Hash Web Crypto (navegadores actuales; Node 22).
+- El front requiere la variable `VITE_API_URL` (URL pública del backend).
 
 ## Pendiente para APF2 (no es un fallo de este prototipo)
 
-- Base de datos real (MySQL/PostgreSQL) y API.
-- HTTPS y hash con bcrypt/argon2 en servidor.
+- Conectar inventario, alquileres y devoluciones al API (hoy son datos de demostración en el navegador; el backend ya expone `/api/equipos`).
 - Cabeceras de seguridad en el hosting (sin romper el preview).
 - Pruebas de despliegue en la nube.
